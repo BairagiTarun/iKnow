@@ -42,7 +42,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Update with your frontend URL if needed
 ]
-ROOT_URLCONF = 'rareNoteProject.urls'
+ROOT_URLCONF = 'KMSimba.urls'
 
 TEMPLATES = [
     {
@@ -60,7 +60,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'rareNoteProject.wsgi.application'
+WSGI_APPLICATION = 'KMSimba.wsgi.application'
 
 # Database configuration using environment variables
 DATABASES = {

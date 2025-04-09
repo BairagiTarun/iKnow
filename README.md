@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # NOTEGPT - README
 
 ## 📋 Project Overview
@@ -184,3 +185,6 @@ For any inquiries or support, please reach out to [tarun@example.com](mailto:bai
 ---
 
 Feel free to customize this template as needed for your project!
+=======
+# iKnow
+>>>>>>> 3359b283a4c4eb6e3cdaaa3d2e09861a37f2194b
