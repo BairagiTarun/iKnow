@@ -3,6 +3,9 @@
 
 KMSimba is an advanced **Knowledge Management System (KMS)** designed to store, organize, and retrieve unstructured data such as text notes, documents, and images. It leverages cutting-edge technologies like **Natural Language Processing (NLP)**, **Machine Learning (ML)**, and **semantic search** to provide an intelligent and user-friendly platform for managing knowledge.
 
+[▶️ Watch the video](https://drive.google.com/file/d/1a5QHyGBNW1LFr8Eow699Yn02Dv8BpnTx/view?usp=drive_link)
+
+
 ---
 
 ## Table of Contents
