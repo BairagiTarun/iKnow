@@ -260,6 +260,12 @@ def upload_and_search(request):
                     if file.name.lower().endswith('.png'):
                         file = convert_png_to_jpg(file)
                     text += " " + " ".join(Obj_Detect_Name(file))
+                elif file.name.endswith('.txt'):
+                    # .txt file ko text ke roop me decode karte hain
+                    try:
+                        text = file.read().decode('utf-8')  # UTF-8 encoding ke saath read
+                    except UnicodeDecodeError:
+                        text = file.read().decode('latin-1')  # fallback encoding
                 print(text)
                 requests.post(url, data={'message': text})
                 tags = generate_tags(text)
