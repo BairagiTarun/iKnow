@@ -182,7 +182,7 @@ This project is licensed under the **MIT License**.
 For any queries or feedback, please contact:
 
 - Email: [imtarunbairagi@gmail.com]
-- GitHub: [@BairagiTarun]
+- GitHub: [[@BairagiTarun](https://github.com/BairagiTarun)]
 
 Thank you for using **KMSimba**!
 
