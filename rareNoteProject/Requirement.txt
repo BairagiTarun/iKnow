@@ -1,0 +1,45 @@
+# Django Framework
+Django==4.2.5
+
+# Transformers (Hugging Face)
+transformers==4.31.0
+
+# PyTorch (for YOLO model)
+torch==2.0.1
+
+# spaCy for NLP
+spacy==3.7.1
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.0/en_core_web_sm-3.7.0-py3-none-any.whl
+
+# PDF Processing
+pdfplumber==0.9.0
+textract==1.6.3
+docx2txt==0.8
+
+# Image Processing
+Pillow==10.0.0
+pytesseract==0.3.10
+
+# Machine Learning
+scikit-learn==1.3.0
+
+# File Hashing
+hashlib
+
+# Temporary File Handling
+tempfile
+
+# Requests for HTTP calls
+requests==2.31.0
+
+# Logging
+logging
+
+# Transformers YOLO Model
+transformers[torch]==4.31.0
+
+# Django REST Framework (optional, if extending APIs)
+djangorestframework==3.14.0
+
+# Debug Toolbar (optional, for debugging)
+django-debug-toolbar==4.2.0

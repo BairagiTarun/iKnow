@@ -1,6 +1,6 @@
 <!-- templates/chat_interface.html -->
- {% load static %}
- <!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,254 +11,149 @@
 <body>
 <div id="chat-container">
     <div id="header">
-        <h1>RareNote Chat</h1>
+        <h1>KMSimba</h1>
+        <!-- From Uiverse.io by barisdogansutcu --> 
+<button class="download-button" onclick="window.location.href='{% url 'upload' %}'">
+    <div class="docs">
+      <svg
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        stroke="currentColor"
+        stroke-width="2"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="css-i6dzq1"
+      >
+        <path
+          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+        ></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <polyline points="10 9 9 9 8 9"></polyline>
+      </svg>
+      Docs
     </div>
-
+    <div class="download">
+      <svg
+        viewBox="0 0 24 24"
+        width="24"
+        height="24"
+        stroke="currentColor"
+        stroke-width="2"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="css-i6dzq1"
+      >
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    </div>
+  </button>
+  
     <div id="toggle-container">
-        <!-- Toggle buttons -->
+            <!-- Toggle buttons -->
         <button id="toggle-button">Switch to Search Mode</button>
-        <button id="gemini-toggle-button">Gemini Mode: OFF</button>
     </div>
-
+    </div>
     <div id="chat-box">
         <div class="bot-message">
-            Welcome to RareNote! Use 'Search Mode' to search notes and 'Gemini Mode' for AI search.
+            Welcome this is KMSimba where you can store your data and get data according to your need.
         </div>
     </div>
-    
     <div id="input-container">
         <textarea type="text" id="chat-input" placeholder="Type your note or question..."></textarea>
         <button id="send-button">Send</button>
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
-        let mode = 'save';  // Default mode is 'Save Mode'
-        let geminiMode = false;  // Gemini Mode is initially OFF
+    let mode = 'save';  // Default mode is 'Save Mode'
 
-        // Toggle between Save Mode and Search Mode
-        $('#toggle-button').click(function () {
-            if (geminiMode) return;  // Do nothing if Gemini Mode is on
-            
-            if (mode === 'save') {
-                mode = 'search';
-                $('#toggle-button').text('Switch to Save Mode');
-                $('#send-button').text('Search');
-            } else {
-                mode = 'save';
-                $('#toggle-button').text('Switch to Search Mode');
-                $('#send-button').text('Save');
-            }
-        });
-
-        // Toggle Gemini Mode ON/OFF
-        $('#gemini-toggle-button').click(function () {
-            geminiMode = !geminiMode;
-            if (geminiMode) {
-                $('#gemini-toggle-button').text('Gemini Mode: ON');
-                $('#toggle-button').hide();  // Hide local toggle button
-                $('#send-button').text('Ask Gemini');  // Change button text
-            } else {
-                $('#gemini-toggle-button').text('Gemini Mode: OFF');
-                $('#toggle-button').show();  // Show local toggle button
-                $('#send-button').text(mode === 'save' ? 'Save' : 'Search');
-            }
-        });
-
-        // Send message when button clicked
-        $('#send-button').click(function () {
-            const message = $('#chat-input').val().trim();
-            if (message === '') return;
-
-            addMessageToChat('user-message', message);
-            $('#chat-input').val('');
-
-            const csrftoken = getCookie('csrftoken');
-
-            if (geminiMode) {
-                // Send request to Gemini AI
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "gemini_query" %}',
-                    data: { message: message },
-                    headers: { 'X-CSRFToken': csrftoken },
-                    success: function (data) {
-                        addMessageToChat('bot-message', data.response, true);
-                    },
-                    error: function (xhr, errmsg, err) {
-                        addMessageToChat('bot-message', 'Error processing Gemini query.');
-                    }
-                });
-            } else {
-                if (mode === 'search') {
-                    // Local Search Mode
-                    $.ajax({
-                        type: 'POST',
-                        url: '{% url "search_notes" %}',
-                        data: { message: message },
-                        headers: { 'X-CSRFToken': csrftoken },
-                        success: function (data) {
-                            addMessageToChat('bot-message', data.response, true);
-                        },
-                        error: function (xhr, errmsg, err) {
-                            addMessageToChat('bot-message', 'Error processing your search.');
-                        }
-                    });
-                } else {
-                    // Local Save Mode
-                    $.ajax({
-                        type: 'POST',
-                        url: '{% url "save_note" %}',
-                        data: { message: message },
-                        headers: { 'X-CSRFToken': csrftoken },
-                        success: function (data) {
-                            addMessageToChat('bot-message', data.response);
-                        },
-                        error: function (xhr, errmsg, err) {
-                            addMessageToChat('bot-message', 'Error saving your note.');
-                        }
-                    });
-                }
-            }
-        });
-
-        function addMessageToChat(className, message, isHtml = false) {
-            const messageDiv = $('<div>').addClass(className);
-            if (isHtml) {
-                messageDiv.html(message);
-            } else {
-                messageDiv.text(message);
-            }
-
-            // Add menu for Gemini response
-            if (geminiMode && className === 'bot-message') {
-                const menuDiv = $('<div>').addClass('menu').text('⋮');
-                menuDiv.click(() => toggleMenu(menuDiv));
-                messageDiv.append(menuDiv);
-
-                const menuOptionsDiv = $('<div>').addClass('menu-options');
-                const saveOption = $('<a>').text('Save').click(() => saveGeminiResponse(message));
-                const copyOption = $('<a>').text('Copy').click(() => copyToClipboard(message));
-                menuOptionsDiv.append(saveOption).append(copyOption);
-
-                messageDiv.append(menuOptionsDiv);
-            }
-
-            $('#chat-box').append(messageDiv);
-            $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-        }
-
-        function toggleMenu(menuDiv) {
-            const menuOptions = menuDiv.next('.menu-options');
-            menuOptions.toggle();
-        }
-
-        function saveGeminiResponse(response) {
-            const csrftoken = getCookie('csrftoken');
-            const plainText = stripHtmlTags(response);  // Convert HTML to plain text
-        
-            $.ajax({
-                type: 'POST',
-                url: '{% url "save_plain_text_response" %}',  // Updated URL to handle plain text save
-                data: { message: plainText },  // Send plain text to the backend
-                headers: { 'X-CSRFToken': csrftoken },
-                success: function (data) {
-                    if (data.response === 'Note saved successfully.') {
-                        showCopyMessage('Response saved successfully.');  // Display success message
-                    } else {
-                        showCopyMessage('Failed to save response.');
-                    }
-                },
-                error: function (xhr, errmsg, err) {
-                    console.error('Error saving response:', errmsg);
-                    showCopyMessage('Error saving response.');
-                }
-            });
-        }
-        
-        
-
-        function copyToClipboard(htmlContent) {
-            // Function to remove all HTML tags and get plain text
-            function stripHtmlTags(html) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
-                return tempDiv.textContent || tempDiv.innerText || '';
-            }
-        
-            const plainText = stripHtmlTags(htmlContent);  // Convert HTML to plain text
-        
-            if (!navigator.clipboard) {
-                // Fallback for older browsers that do not support navigator.clipboard
-                const textarea = document.createElement('textarea');
-                textarea.value = plainText;
-                textarea.style.position = 'fixed';  // Prevent scrolling to bottom of page in MS Edge.
-                document.body.appendChild(textarea);
-                textarea.focus();
-                textarea.select();
-        
-                try {
-                    const successful = document.execCommand('copy');
-                    if (successful) {
-                        showCopyMessage();  // Show non-intrusive "Copied!" message
-                    } else {
-                        showCopyMessage('Failed to copy');
-                    }
-                } catch (err) {
-                    console.error('Fallback: Oops, unable to copy', err);
-                    showCopyMessage('Failed to copy');
-                }
-        
-                document.body.removeChild(textarea);
-                return;
-            }
-        
-            // Modern way using Clipboard API
-            navigator.clipboard.writeText(plainText).then(() => {
-                showCopyMessage();  // Show non-intrusive "Copied!" message
-            }).catch((err) => {
-                console.error('Async: Could not copy text: ', err);
-                showCopyMessage('Failed to copy');
-            });
-        }
-        
-        function showCopyMessage(message = 'Copied!') {
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = message;
-            messageDiv.style.position = 'fixed';
-            messageDiv.style.bottom = '20px';
-            messageDiv.style.right = '20px';
-            messageDiv.style.padding = '10px 20px';
-            messageDiv.style.backgroundColor = '#4CAF50';  // Green color for success
-            messageDiv.style.color = '#fff';
-            messageDiv.style.borderRadius = '5px';
-            messageDiv.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-            messageDiv.style.zIndex = '1000';
-        
-            document.body.appendChild(messageDiv);
-        
-            setTimeout(() => {
-                document.body.removeChild(messageDiv);
-            }, 2000);  // Message disappears after 2 seconds
-        }
-        
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
+    // Toggle between Save Mode and Search Mode
+    $('#toggle-button').click(function () {
+        if (mode === 'save') {
+            mode = 'search';
+            $('#toggle-button').text('Switch to Save Mode');
+            $('#send-button').text('Search');
+        } else {
+            mode = 'save';
+            $('#toggle-button').text('Switch to Search Mode');
+            $('#send-button').text('Save');
         }
     });
+
+    // Send message when button clicked
+    $('#send-button').click(function () {
+        const message = $('#chat-input').val().trim();
+        if (message === '') return;
+
+        addMessageToChat('user-message', message);
+        $('#chat-input').val('');
+
+        const csrftoken = getCookie('csrftoken');
+
+        if (mode === 'search') {
+            // Local Search Mode
+            $.ajax({
+                type: 'POST',
+                url: '{% url "search_notes" %}',
+                data: { message: message },
+                headers: { 'X-CSRFToken': csrftoken },
+                success: function (data) {
+                    addMessageToChat('bot-message', data.response, true);
+                },
+                error: function (xhr, errmsg, err) {
+                    addMessageToChat('bot-message', 'Error processing your search.');
+                }
+            });
+        } else {
+            // Local Save Mode
+            $.ajax({
+                type: 'POST',
+                url: '{% url "save_note" %}',
+                data: { message: message },
+                headers: { 'X-CSRFToken': csrftoken },
+                success: function (data) {
+                    addMessageToChat('bot-message', data.response);
+                },
+                error: function (xhr, errmsg, err) {
+                    addMessageToChat('bot-message', 'Error saving your note.');
+                }
+            });
+        }
+    });
+
+    function addMessageToChat(className, message, isHtml = false) {
+        const messageDiv = $('<div>').addClass(className);
+        if (isHtml) {
+            messageDiv.html(message);
+        } else {
+            messageDiv.text(message);
+        }
+        $('#chat-box').append(messageDiv);
+        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
 </script>
 </body>
 </html>

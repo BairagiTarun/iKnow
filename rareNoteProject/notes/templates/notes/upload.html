@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Search Files</title>
+    <link rel="stylesheet" href="{% static 'notes/upload.css' %}">
+    <script>
+        // Function to show the rename input field and button and hide other buttons
+        function showRenameField(fileId, currentFileName) {
+            // Hide the file name
+            document.getElementById('file-name-' + fileId).style.display = 'none';
+
+            // Get the current displayed file name
+            const displayedFileName = document.getElementById('file-name-' + fileId).innerText;
+
+            // Remove the extension from the displayed file name
+            const fileNameWithoutExtension = displayedFileName.replace(/\.[^/.]+$/, "");
+
+            const inputField = document.getElementById('rename-input-' + fileId);
+            inputField.style.display = 'inline-block';  // Show the input field
+            inputField.value = fileNameWithoutExtension;  // Set input value to current file name without extension
+            
+            document.getElementById('rename-button-' + fileId).style.display = 'inline-block';  // Show the rename button
+            
+            // Hide the Download and Delete buttons
+            document.getElementById('download-button-' + fileId).style.display = 'none';
+            document.getElementById('delete-button-' + fileId).style.display = 'none';
+        }
+
+        // Function to send an AJAX request to rename the file
+        function renameFile(fileId) {
+            const inputField = document.getElementById('rename-input-' + fileId);
+            const newFileNameBase = inputField.value.trim();  // Get the base file name without extension
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;  // Get CSRF token from form
+
+            // Validate the new file name
+            if (!newFileNameBase) {
+                alert('File name cannot be empty.');
+                return;
+            }
+
+            // AJAX request to rename file
+            fetch(`/api/rename/${fileId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken  // CSRF token for Django
+                },
+                body: JSON.stringify({ new_name_base: newFileNameBase })  // Send new base file name as JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the file name displayed on the page with the new name
+                    document.getElementById('file-name-' + fileId).innerText = data.new_name;
+
+                    // Hide the rename input field and button
+                    inputField.style.display = 'none';
+                    document.getElementById('rename-button-' + fileId).style.display = 'none';
+
+                    // Show the updated file name span
+                    document.getElementById('file-name-' + fileId).style.display = 'inline';
+
+                    // Show the Download and Delete buttons again
+                    document.getElementById('download-button-' + fileId).style.display = 'inline';
+                    document.getElementById('delete-button-' + fileId).style.display = 'inline';
+                } else {
+                    alert(data.message);  // Display error message
+                }
+            })
+            .catch(error => {
+                console.error('Error renaming file:', error);
+                alert('An error occurred while renaming the file.');
+            });
+        }
+
+        // Function to send an AJAX request to delete the file
+        function deleteFile(fileId) {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;  // Get CSRF token from form
+
+            // AJAX request to delete file
+            fetch(`/api/delete/${fileId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken  // CSRF token for Django
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the file item from the list
+                    document.getElementById('file-item-' + fileId).remove();
+                } else {
+                    alert(data.message);  // Display error message
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting file:', error);
+                alert('An error occurred while deleting the file.');
+            });
+        }
+    </script>
+</head>
+<body>
+    <div id="header">
+        <h1>KMSimba</h1>
+        <!-- HTML !-->
+    </div>
+    <div class="container">
+        <div class="upper">
+        <!-- Upload Form -->
+        <div class="form-container">
+            <h2>Upload a File</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ upload_form.as_p }}
+                <input type="hidden" name="action" value="upload">
+                <button type="submit" class="btn">Upload</button>
+            </form>
+        </div>
+
+        <!-- Search Form -->
+        <div class="form-container">
+            <h2>Search Files</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ search_form.as_p }}
+                <input type="hidden" name="action" value="search">
+                <button type="submit" class="btn">Search</button>
+            </form>
+        </div>
+       </div>
+        <!-- Display Search Results -->
+        <div class="results-container">
+            <h2>Search Results for "{{ query }}"</h2>
+            {% if files %}
+                <ul class="file-list">
+                    {% for file in files %}
+                        <li class="file-item" id="file-item-{{ file.id }}">
+                            <!-- File name and rename functionality -->
+                            <span class="file-name" id="file-name-{{ file.id }}" onclick="showRenameField({{ file.id }}, '{{ file.file_name }}')">{{ file.file_name }}</span>
+                            <input type="text" class="rename-input" id="rename-input-{{ file.id }}" style="display: none;">
+                            <button class="btn rename-button" id="rename-button-{{ file.id }}" onclick="renameFile({{ file.id }})" style="display: none;">Rename</button>
+
+                            <!-- Download and Delete buttons -->
+                            <a href="{% url 'download_file' file.id %}" class="btn" id="download-button-{{ file.id }}">Download</a>
+                            <button class="btn btn-danger" id="delete-button-{{ file.id }}" onclick="deleteFile({{ file.id }})">Delete</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No files found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

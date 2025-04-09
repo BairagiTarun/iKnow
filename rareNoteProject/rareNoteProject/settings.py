@@ -1,20 +1,18 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv  # Load environment variables from a .env file
 
-# Load environment variables from a .env file (ensure you have python-dotenv installed)
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-default-secret-key')
+SECRET_KEY = 'django-insecure-bl)n69ebpr(0!+a2+hewg7rnt$tj5i^m7yzlr*_guy_qirrq_t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1').split()
+# List of allowed hosts
+ALLOWED_HOSTS = []
 
 # CORS settings for cross-origin requests (if needed)
 INSTALLED_APPS = [ 
@@ -41,8 +39,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split()
-
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Update with your frontend URL if needed
+]
 ROOT_URLCONF = 'rareNoteProject.urls'
 
 TEMPLATES = [
@@ -67,17 +66,11 @@ WSGI_APPLICATION = 'rareNoteProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'rareNoteDB'),
-        'USER': os.getenv('MYSQL_USER', 'remote_user'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'your-db-password'),
-        'HOST': os.getenv('MYSQL_HOST', '127.0.0.1'),
-        'PORT': os.getenv('MYSQL_PORT', '3306'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-            'connect_timeout': 10,
-        },
-        'CONN_MAX_AGE': 600,  # Persistent connections
+        'NAME': 'RARE_db',
+        'USER': 'remote_user',
+        'PASSWORD': 'Tarun1998#',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
@@ -97,7 +90,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files configuration
@@ -138,29 +131,6 @@ LOGGING = {
     },
 }
 
-# Security settings for production
-if not DEBUG:
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 31536000  # One year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_REFERRER_POLICY = 'same-origin'
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split()
-
-# Email configuration (example placeholder, adjust as needed)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.example.com')
-EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'your-email@example.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'your-email-password')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Other settings
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
