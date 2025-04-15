@@ -68,7 +68,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'RARE_db',
         'USER': 'remote_user',
-        'PASSWORD': 'Tarun1998#',
+        'PASSWORD': 'Password',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

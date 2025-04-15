@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RareNote Chat Interface</title>
+    <title>KMSimba</title>
     <link rel="stylesheet" href="{% static 'notes/styles.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -132,7 +132,8 @@
         const messageDiv = $('<div>').addClass(className);
         if (isHtml) {
             messageDiv.html(message);
-        } else {
+        }
+        else {
             messageDiv.text(message);
         }
         $('#chat-box').append(messageDiv);
