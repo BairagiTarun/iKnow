@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'KMSimba.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'RARE_db',
+        'NAME': 'iknow_db',
         'USER': 'remote_user',
         'PASSWORD': 'Password',
         'HOST': '127.0.0.1',

@@ -3,6 +3,9 @@
 
 KMSimba is an advanced **Knowledge Management System (KMS)** designed to store, organize, and retrieve unstructured data such as text notes, documents, and images. It leverages cutting-edge technologies like **Natural Language Processing (NLP)**, **Machine Learning (ML)**, and **semantic search** to provide an intelligent and user-friendly platform for managing knowledge.
 
+[▶️ Watch the video](https://drive.google.com/file/d/1a5QHyGBNW1LFr8Eow699Yn02Dv8BpnTx/view?usp=drive_link)
+
+
 ---
 
 ## Table of Contents
@@ -80,7 +83,7 @@ It is ideal for students, professionals, researchers, and personal users seeking
 ### Prerequisites
 1. **Python 3.8 or higher**
 2. **Tesseract OCR** (for Windows users):
-   - Download and install Tesseract from [here](https://github.com/tesseract-ocr/tesseract).
+   - Download and install Tesseract from [here](https://sourceforge.net/projects/tesseract-ocr.mirror/files/5.5.0/tesseract-ocr-w64-setup-5.5.0.20241111.exe/download).
    - Update the `pytesseract.pytesseract.tesseract_cmd` path in the code if necessary.
 3. **Django**: Install Django using `pip install django`.
 
@@ -182,7 +185,7 @@ This project is licensed under the **MIT License**.
 For any queries or feedback, please contact:
 
 - Email: [imtarunbairagi@gmail.com]
-- GitHub: [@BairagiTarun]
+- GitHub: [[@BairagiTarun](https://github.com/BairagiTarun)]
 
 Thank you for using **KMSimba**!
 
